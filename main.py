@@ -4,7 +4,11 @@ from PySide2.QtGui import QGuiApplication, QImage, QColor, QPixmap
 from PySide2.QtQuick import QQuickImageProvider
 from PySide2.QtQml import QQmlApplicationEngine
 import resources
-import cv2
+# import cv2
+
+from src import opencv_import
+cv2 = opencv_import.from_path()
+
 import mediapipe as mp
 import threading
 import numpy as np
