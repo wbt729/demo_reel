@@ -1,0 +1,13 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/ApplicationBar.qml</file>
+        <file>qml/SidePanel.qml</file>
+        <file>icons/menu.svg</file>
+        <file>icons/hand.svg</file>
+        <file>icons/people.svg</file>
+        <file>icons/agriculture.svg</file>
+        <file>img/logo.png</file>
+    </qresource>
+</RCC>
