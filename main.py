@@ -4,10 +4,12 @@ from PySide2.QtGui import QGuiApplication, QImage, QColor, QPixmap
 from PySide2.QtQuick import QQuickImageProvider
 from PySide2.QtQml import QQmlApplicationEngine
 import resources
-# import cv2
+import cv2
+from ultralytics import YOLO
+import supervision as sv
 
-from src import opencv_import
-cv2 = opencv_import.from_path()
+#from src import opencv_import
+#cv2 = opencv_import.from_path()
 
 import mediapipe as mp
 import threading
@@ -18,6 +20,13 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 mp_pose = mp.solutions.pose
+screw_model = YOLO("screw_nuts.pt")
+
+box_annotator = sv.BoxAnnotator(
+        thickness=2,
+        text_thickness=2,
+        text_scale=1
+    )
 
 
 class ImageProcessing(QObject):
@@ -88,6 +97,25 @@ class ImageProcessing(QObject):
                 self.input_img = None
         print("run not set, exit thread")
 
+    def detect_screws(self):
+        print("start detect screws")
+        while self._run:
+            if self.input_img is not None:
+                image = self.input_img
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                result = screw_model(image, agnostic_nms=True)[0]
+                detections = sv.Detections.from_yolov8(result)
+                # labels = [
+                #     f"{screw_model.model.names[class_id]} {confidence:0.2f}"
+                #     for _, confidence, class_id, _
+                #     in detections
+                # ]
+                self.output_img = box_annotator.annotate(
+                    scene=self.input_img, 
+                    detections=detections
+                )
+                self.input_img = None
+
     @Slot()
     def start_pose(self):
         print("start pose")
@@ -99,6 +127,12 @@ class ImageProcessing(QObject):
         print("start hands")
         self.stop_processing_thread()
         self.start_processing_thread(self.detect_hands)
+
+    @Slot()
+    def start_screws(self):
+        print("start hands")
+        self.stop_processing_thread()
+        self.start_processing_thread(self.detect_screws)
 
 
 

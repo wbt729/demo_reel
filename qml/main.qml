@@ -45,14 +45,18 @@ ApplicationWindow {
                 }
             }
             Column {
-            Button {
-                text: "Pose"
-                onClicked: imgproc.start_pose()
-            }
-            Button {
-                text: "Hands"
-                onClicked: imgproc.start_hands()
-            }
+                Button {
+                    text: "Pose"
+                    onClicked: imgproc.start_pose()
+                }
+                Button {
+                    text: "Hands"
+                    onClicked: imgproc.start_hands()
+                }
+                Button {
+                    text: "Screws"
+                    onClicked: imgproc.start_screws()
+                }
             }
         }
 }
